@@ -18,6 +18,7 @@ To show some numbers, below you can see the actual size for p5.js version v0.10.
 | p5.min.js      | 545 KB      |   The .min file coming with the library |
 | p5.min.js | ~1,500 KB      |    The .min file generated from the original js file |
 
+<br/>
 As you can see, the minified file coming with p5.js is almost three times smaller than the one we obtain after minified the raw javascript file. Again, that's because some nice-to-have logic for development time, are missing in the original p5.min.js file.
 
 Knowing all this, what Usemin-Webpack-plugin does, is to allow one to specify inside the Webpack config file, a series of libraries that will have the .js and .min.js swapped at build time. After the build process is completed, the files will be restored to the initial state.
@@ -55,7 +56,7 @@ module.exports = webpackConfig;
 
 ## Examples
 
-This is a modified version of [WebPack's Plugin documentation](https://webpack.js.org/concepts/plugins/) that includes the Usemin Webpack Plugin.
+This is a modified version of [WebPack's Plugin documentation] that includes the Usemin Webpack Plugin.
 
 ```js
 const HtmlWebpackPlugin = require('html-webpack-plugin');
@@ -97,4 +98,11 @@ module.exports = {
 };
 ```
 
+## Todo Items
+
+* add tests
+* switch to Typescript for better options handling
+* add more option properties
+
 [p5.js]: https://p5js.org/
+[WebPack's Plugin documentation]: https://webpack.js.org/concepts/plugins/

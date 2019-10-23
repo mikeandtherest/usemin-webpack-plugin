@@ -1,6 +1,6 @@
 {
   "name": "usemin-webpack-plugin",
-  "version": "1.0.4",
+  "version": "1.0.5",
   "description": "Webpack Plugin for using the min.js version of a library at build time.",
   "main": "src/index.js",
   "scripts": {
@@ -8,6 +8,10 @@
   },
   "author": "Mihai Paraschivescu <mikeandtherest@gmail.com>",
   "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/mikeandtherest/usemin-webpack-plugin.git"
+  },
   "keywords": [
     "usemin",
     "plugin",

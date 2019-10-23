@@ -18,3 +18,7 @@ All notable changes to this project will be documented in this file.
 ### 1.0.4 (2019-10-23)
 * added options documentation in code
 * bug fixes and improvements
+
+### 1.0.4 (2019-10-23)
+* added the 'noLogs' option
+* made the link with the git repository, in package.json

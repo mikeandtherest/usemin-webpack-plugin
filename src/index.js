@@ -34,6 +34,14 @@ const fs = require("fs");
       the need to remove or comment out the plugin entry in
       the Webpack config file.
     ******
+
+    ******
+    noLogs: boolean;
+
+    - Defaults to true
+    - Set it to true to disable writing all the logs during the
+      WebPack build process.
+    ******    
 */
 
 module.exports = class UseminWebpackPlugin {
@@ -43,22 +51,23 @@ module.exports = class UseminWebpackPlugin {
         }
 
         this.options = options;
+        this.entries = options.entries || [];
+        this.disabled = options.disabled || false;
+        this.noLogs = options.noLogs || true;
     }
 
     apply(compiler) {
-        if (this.options && this.options.disabled) {
+        if (this.disabled) {
             return;
         }
 
-        const entries = this.options.entries;
-
         compiler.hooks.beforeCompile.tapAsync("UseminWebpackPlugin", (params, callback) => {
-            this.changeNormalFileWithMin(entries);
+            this.changeNormalFileWithMin(this.entries);
             callback();
         });
 
         compiler.hooks.done.tapAsync("UseminWebpackPlugin", (stats) => {
-            this.changeMinFileWithNormal(entries);
+            this.changeMinFileWithNormal(this.entries);
         });
     }
 
@@ -68,17 +77,17 @@ module.exports = class UseminWebpackPlugin {
             const fn = entry.fileName;
 
             if (!path || !path.length) {
-                console.warn("path property not provided for the entry. Moving to the next entry.");
+                if (!this.noLogs) console.warn("path property not provided for the entry. Moving to the next entry.");
                 continue;
             }
 
             if (!fs.existsSync(path)) {
-                console.warn("Path '" + path + "' can't be found. Moving to the next entry.");
+                if (!this.noLogs) console.warn("Path '" + path + "' can't be found. Moving to the next entry.");
                 continue;
             }
 
             if (!fn || !fn.length) {
-                console.warn("fileName property not provided for the entry. Moving to the next entry.");
+                if (!this.noLogs) console.warn("fileName property not provided for the entry. Moving to the next entry.");
                 continue;
             }
 
@@ -91,19 +100,19 @@ module.exports = class UseminWebpackPlugin {
 
             try {
                 if (!fs.existsSync(origFileName)) {
-                    console.warn("File '" + origFileName + "' doesn't exist. Moving to the next entry.");
+                    if (!this.noLogs) console.warn("File '" + origFileName + "' doesn't exist. Moving to the next entry.");
                     continue;
                 }
     
                 if (!fs.existsSync(minFileName)) {
-                    console.warn("File '" + minFileName + "' doesn't exist. Moving to the next entry.");
+                    if (!this.noLogs) console.warn("File '" + minFileName + "' doesn't exist. Moving to the next entry.");
                     continue;
                 }
     
-                console.log("Changing " + origFileName + " to " + changedFileName);
+                if (!this.noLogs) console.log("Changing " + origFileName + " to " + changedFileName);
                 fs.renameSync(origFileName, changedFileName);
     
-                console.log("Changing " + minFileName + " to " + origFileName);
+                if (!this.noLogs) console.log("Changing " + minFileName + " to " + origFileName);
                 fs.renameSync(minFileName, origFileName);                
             } 
             catch (error) {
@@ -118,17 +127,17 @@ module.exports = class UseminWebpackPlugin {
             const fn = entry.fileName;
 
             if (!path || !path.length) {
-                console.warn("path property not provided for the entry. Moving to the next entry.");
+                if (!this.noLogs) console.warn("path property not provided for the entry. Moving to the next entry.");
                 continue;
             }
 
             if (!fs.existsSync(path)) {
-                console.warn("Path '" + path + "' can't be found. Moving to the next entry.");
+                if (!this.noLogs) console.warn("Path '" + path + "' can't be found. Moving to the next entry.");
                 continue;
             }
 
             if (!fn || !fn.length) {
-                console.warn("fileName property not provided for the entry. Moving to the next entry.");
+                if (!this.noLogs) console.warn("fileName property not provided for the entry. Moving to the next entry.");
                 continue;
             }
 
@@ -141,19 +150,19 @@ module.exports = class UseminWebpackPlugin {
 
             try {
                 if (!fs.existsSync(origFileName)) {
-                    console.warn("File: " + origFileName + " doesn't exist. Moving to the next entry.");
+                    if (!this.noLogs) console.warn("File: " + origFileName + " doesn't exist. Moving to the next entry.");
                     continue;
                 }
 
                 if (!fs.existsSync(changedFileName)) {
-                    console.warn("File: " + changedFileName + " doesn't exist. Moving to the next entry.");
+                    if (!this.noLogs) console.warn("File: " + changedFileName + " doesn't exist. Moving to the next entry.");
                     continue;
                 }
 
-                console.log("Changing " + origFileName + " to " + minFileName);
+                if (!this.noLogs) console.log("Changing " + origFileName + " to " + minFileName);
                 fs.renameSync(origFileName, minFileName);
 
-                console.log("Changing " + changedFileName + " to " + origFileName);
+                if (!this.noLogs) console.log("Changing " + changedFileName + " to " + origFileName);
                 fs.renameSync(changedFileName, origFileName);
             }
             catch (error) {
