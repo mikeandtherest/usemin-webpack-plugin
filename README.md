@@ -35,8 +35,42 @@ or short version
 
 ## Options and Defaults
 
-(TODO)
+### **entries: []**
 
+    - Defaults to []
+    - Holds on array of objects, where each object
+      describes a path and a fileName for a library
+      that needs to use the .min.js file at build time.
+
+    Eg:
+        new UseminWebpackPlugin({
+            entries: [
+                {
+                    path: "node_modules/p5/lib",
+                    fileName: "p5"
+                },
+                {
+                    path: "node_modules/sockjs-client/dist",
+                    fileName: "sockjs"
+                }                
+            ]
+        })
+<br/>
+
+### **disabled: boolean**
+
+    - Defaults to false
+    - Set it to true to disable the whole plugin, without
+      the need to remove or comment out the plugin entry in
+      the Webpack config file.        
+
+<br/>
+
+### **noLogs: boolean**
+
+    - Defaults to true
+    - Set it to true to disable writing all the logs during the
+      WebPack build process.
 ## Usage
 
 ```js

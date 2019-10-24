@@ -61,14 +61,36 @@ module.exports = class UseminWebpackPlugin {
             return;
         }
 
-        compiler.hooks.beforeCompile.tapAsync("UseminWebpackPlugin", (params, callback) => {
-            this.changeNormalFileWithMin(this.entries);
-            callback();
-        });
+        this.filesWereChanged = false;
 
-        compiler.hooks.done.tapAsync("UseminWebpackPlugin", (stats) => {
-            this.changeMinFileWithNormal(this.entries);
-        });
+        // Check if webpack 4+ hooks available, otherwise use the old plugin system.
+        const hooks = compiler.hooks;
+        if (hooks) {
+            hooks.beforeCompile.tapAsync("UseminWebpackPlugin", (_, callback) => {
+                this.changeNormalFileWithMin(this.entries);
+                callback();
+            });
+    
+            hooks.done.tapAsync("UseminWebpackPlugin", () => {
+                // The files weren't initially changed (eg. because of an error).
+                // Nothing to do.
+                if (!this.filesWereChanged) return;
+                this.changeMinFileWithNormal(this.entries);
+            });
+        }
+        else {
+            compiler.plugin("beforeCompile", (_, callback) => {
+                this.changeNormalFileWithMin(this.entries);
+                if (callback) callback();
+            });
+
+            compiler.plugin("done", () => {
+                // The files weren't initially changed (eg. because of an error).
+                // Nothing to do.
+                if (!this.filesWereChanged) return;
+                this.changeMinFileWithNormal(this.entries);
+            });
+        }
     }
 
     changeNormalFileWithMin(entries) {
@@ -103,20 +125,22 @@ module.exports = class UseminWebpackPlugin {
                     if (!this.noLogs) console.warn("File '" + origFileName + "' doesn't exist. Moving to the next entry.");
                     continue;
                 }
-    
+
                 if (!fs.existsSync(minFileName)) {
                     if (!this.noLogs) console.warn("File '" + minFileName + "' doesn't exist. Moving to the next entry.");
                     continue;
                 }
-    
+
                 if (!this.noLogs) console.log("Changing " + origFileName + " to " + changedFileName);
                 fs.renameSync(origFileName, changedFileName);
-    
+
                 if (!this.noLogs) console.log("Changing " + minFileName + " to " + origFileName);
-                fs.renameSync(minFileName, origFileName);                
-            } 
+                fs.renameSync(minFileName, origFileName);
+
+                this.filesWereChanged = true;
+            }
             catch (error) {
-                console.error(error); 
+                console.error(error);
             }
         }
     }
@@ -164,6 +188,8 @@ module.exports = class UseminWebpackPlugin {
 
                 if (!this.noLogs) console.log("Changing " + changedFileName + " to " + origFileName);
                 fs.renameSync(changedFileName, origFileName);
+
+                this.filesWereChanged = false;
             }
             catch (error) {
                 console.error(error);
@@ -172,7 +198,8 @@ module.exports = class UseminWebpackPlugin {
     }
 }
 
-// Copied from https://github.com/sindresorhus/is-plain-obj/blob/97480673cf12145b32ec2ee924980d66572e8a86/index.js
+// Code taken from
+// https://github.com/sindresorhus/is-plain-obj/blob/97480673cf12145b32ec2ee924980d66572e8a86/index.js
 function isPlainObject(value) {
     if (Object.prototype.toString.call(value) !== '[object Object]') {
         return false;

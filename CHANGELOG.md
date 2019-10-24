@@ -19,6 +19,11 @@ All notable changes to this project will be documented in this file.
 * added options documentation in code
 * bug fixes and improvements
 
-### 1.0.4 (2019-10-23)
+### 1.0.5 (2019-10-23)
 * added the 'noLogs' option
 * made the link with the git repository, in package.json
+
+### 1.0.6 (2019-10-23)
+* added support for older versions of WebPack (below 4)
+* misc. improvements added
+* added Options and Defaults to the README.md file
