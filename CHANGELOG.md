@@ -23,7 +23,10 @@ All notable changes to this project will be documented in this file.
 * added the 'noLogs' option
 * made the link with the git repository, in package.json
 
-### 1.0.6 (2019-10-23)
+### 1.0.6 (2019-10-24)
 * added support for older versions of WebPack (below 4)
 * misc. improvements added
 * added Options and Defaults to the README.md file
+
+### 1.0.7 (2019-12-10)
+* fixed a dependency vulnerability, caused by 'serialize-javascript'
